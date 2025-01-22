@@ -1,10 +1,13 @@
 import 'package:deploy_mate/core/logger.dart';
+import 'package:deploy_mate/core/project_config.dart';
 import 'package:deploy_mate/interact/select_config.dart';
 import 'package:deploy_mate/interact/select_flavors.dart';
 import 'package:deploy_mate/utils/check_directories.dart';
 import 'package:deploy_mate/utils/flavor_processor.dart';
 
 void main() async {
+  final projectConfig = await ProjectConfig().init();
+
   // Stage 1: Check directories and configuration
   checkDirectoriesAndFile();
 
@@ -26,10 +29,14 @@ void main() async {
   }
 
   // Stage 5: Process each selected flavor
+  final flavorProcessor = FlavorProcessor(projectConfig);
   for (final flavor in selectedFlavors) {
     Logger.processing('Processing flavor: $flavor');
-    await FlavorProcessor().processFlavor(flavor: flavor, options: options);
+    await flavorProcessor.run(
+      flavor: flavor,
+      options: options,
+    );
   }
 
-  Logger.success('Build process completed successfully.');
+  Logger.success('CI/CD completed successfully');
 }

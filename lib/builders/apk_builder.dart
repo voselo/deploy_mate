@@ -1,25 +1,14 @@
-import 'dart:io';
-
 import 'package:deploy_mate/builders/interface/builder_interface.dart';
-import 'package:deploy_mate/core/logger.dart';
+import 'package:deploy_mate/utils/process_helper.dart';
 
-class APKBuilder implements IBuilder {
-  APKBuilder();
+class ApkBuilder implements IBuilder {
+  ApkBuilder();
 
   @override
-  Future<void> build(String flavor, {String? outputDir}) async {
-    Logger.processing('Preparing $flavor apk build...');
-
-    final result = await Process.run(
+  Future<void> build(String flavor) async {
+    await ProcessHelper.run(
       'flutter',
-      ['build', 'apk', '--flavor=$flavor', '--dart-define=FLAVOR=$flavor', '--output-dir=$outputDir'],
+      ['build', 'apk', '--flavor=$flavor', '--dart-define=FLAVOR=$flavor', '--release'],
     );
-
-    if (result.exitCode != 0) {
-      Logger.error('APK build failed: ${result.stderr}');
-      throw Exception('APK build failed');
-    }
-
-    Logger.success('APK build completed. Output: $outputDir');
   }
 }

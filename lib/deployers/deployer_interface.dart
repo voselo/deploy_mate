@@ -1,3 +1,3 @@
 abstract class IDeployer {
-  Future<void> deploy({String? filePath, Map<String, dynamic>? additionalParams});
+  Future<void> deploy({required String filePath, Map<String, dynamic>? additionalParams});
 }

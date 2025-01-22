@@ -5,6 +5,9 @@ import 'package:yaml/yaml.dart';
 
 class ProjectConfig {
   final Map<String, dynamic> _config = {};
+
+  String? get botToken => _config['bot_token'];
+  String? get chatId => _config['chat_id'];
   String? get yandexToken => _config['yandex_token'];
 
   ProjectConfig();

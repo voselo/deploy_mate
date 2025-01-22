@@ -1,26 +1,14 @@
-import 'dart:io';
-
 import 'package:deploy_mate/builders/interface/builder_interface.dart';
-import 'package:deploy_mate/core/logger.dart';
+import 'package:deploy_mate/utils/process_helper.dart';
 
-class IPABuilder implements IBuilder {
-  IPABuilder();
+class IpaBuilder implements IBuilder {
+  IpaBuilder();
 
   @override
-  Future<void> build(String flavor, {String? outputDir}) async {
-      Logger.processing('Preparing $flavor ios build...');
-
-
-    final result = await Process.run(
+  Future<void> build(String flavor) async {
+    await ProcessHelper.run(
       'flutter',
-      ['build', 'ipa', '--flavor=$flavor', '--dart-define=FLAVOR=$flavor'],
+      ['build', 'ipa', '--flavor=$flavor', '--dart-define=FLAVOR=$flavor', '--release'],
     );
-
-    if (result.exitCode != 0) {
-      Logger.error('Ios build failed: ${result.stderr}');
-      throw Exception('Build failed');
-    }
-
-    Logger.success('Ios build completed');
   }
 }
