@@ -5,7 +5,7 @@ class IpaBuilder implements IBuilder {
   IpaBuilder();
 
   @override
-  Future<void> build(String flavor) async {
+  Future<void> build(String flavor, {String? targetDir}) async {
     await ProcessHelper.run(
       'flutter',
       ['build', 'ipa', '--flavor=$flavor', '--dart-define=FLAVOR=$flavor', '--release'],

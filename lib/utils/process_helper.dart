@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:deploy_mate/core/logger.dart';
 
 class ProcessHelper {
-  static Future<void> run(
+  static Future<int> run(
     String command,
     List<String> arguments, {
     String? workingDirectory,
@@ -20,10 +20,6 @@ class ProcessHelper {
     process.stderr.transform(SystemEncoding().decoder).listen((data) => Logger.error(data.trim()));
 
     final exitCode = await process.exitCode;
-
-    if (exitCode != 0) {
-      Logger.error('Command failed with exit code $exitCode');
-      throw Exception('Process failed: $command');
-    }
+    return exitCode;
   }
 }

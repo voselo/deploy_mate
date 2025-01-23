@@ -5,7 +5,8 @@ class WebBuilder implements IBuilder {
   WebBuilder();
 
   @override
-  Future<void> build(String flavor) async {
+  Future<void> build(String flavor, {String? targetDir}) async {
+
     await ProcessHelper.run(
       'flutter',
       ['build', 'web', '--flavor=$flavor', '--dart-define=FLAVOR=$flavor', '--release'],

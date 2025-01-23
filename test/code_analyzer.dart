@@ -28,6 +28,6 @@ class CodeAnalyzer {
       exit(analyzeExitCode);
     }
 
-    Logger.success('Static analysis passed successfully.');
+    Logger.success('Static analysis passed successfully');
   }
 }

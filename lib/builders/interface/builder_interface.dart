@@ -1,3 +1,3 @@
 abstract class IBuilder {
-  Future<void> build(String flavor);
+  Future<void> build(String flavor, {String? targetDir});
 }

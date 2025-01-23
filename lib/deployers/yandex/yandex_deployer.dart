@@ -13,15 +13,13 @@ class YandexDeployer implements IDeployer {
 
   @override
   Future<void> deploy({required String filePath, Map<String, dynamic>? additionalParams}) async {
-    Logger.info('Starting deployment to Yandex Disk...');
-
     if (!File(filePath).existsSync()) {
       Logger.error('File $filePath does not exist.');
       return;
     }
 
-    final accessToken = config.getValue<String>('yandex_token');
-    final yandexFolder = config.getValue<String>('yandex_folder') ?? '/deploy_mate_builds';
+    final accessToken = config.yandexToken;
+    final yandexFolder = config.yandexFolder;
 
     if (accessToken == null) {
       Logger.error('Yandex token is not configured.');

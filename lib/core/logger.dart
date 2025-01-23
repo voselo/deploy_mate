@@ -7,4 +7,5 @@ abstract class Logger {
   static void error(String message) => print('🚨  $message');
 
   static void deploy(String message) => print('🚀 $message');
+  static void outputPath(String path) => print('\x1B[32mOutput\x1B[0m /$path');
 }
