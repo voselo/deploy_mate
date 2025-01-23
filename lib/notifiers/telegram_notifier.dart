@@ -33,11 +33,11 @@ class TelegramNotifier {
     }
 
     if (apkLink != null) {
-      buffer.writeln('👉 [скачать APK]($apkLink)');
+      buffer.writeln('👉 [download APK]($apkLink)');
     }
 
     if (appBundleLink != null) {
-      buffer.writeln('👉 [скачать App Bundle]($appBundleLink)');
+      buffer.writeln('👉 [download App Bundle]($appBundleLink)');
     }
 
     final url = Uri.parse('https://api.telegram.org/bot$botToken/sendMessage');

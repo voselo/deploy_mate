@@ -19,6 +19,12 @@ class ProjectConfig {
   String get yandexFolder => _config['yandex_folder'] ?? '/deploy_mate_builds';
   set yandexFolder(String? value) => _updateConfig('yandex_folder', value);
 
+  String? get yandexAppClientId => _config['yandex_app_client_id'];
+  set yandexAppClientId(String? value) => _updateConfig('yandex_app_client_id', value);
+
+  String? get yandexAppClientSecret => _config['yandex_app_client_secret'];
+  set yandexAppClientSecret(String? value) => _updateConfig('yandex_app_client_secret', value);
+
   ProjectConfig();
 
   /// Initialize configuration from the default YAML file

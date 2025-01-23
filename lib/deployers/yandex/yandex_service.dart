@@ -109,10 +109,16 @@ class YandexService {
   }
 
   Future<String?> _authYandex() async {
-    const clientId = 'dae3ab6b701e4b56bd83e52dbcf210d1';
-    const clientSecret = '8af4ceeafb33464e971657c51cb2a13e';
     const redirectUri = 'http://localhost:8080/callback';
-    const authorizeUrl =
+    final clientId = config.yandexAppClientId;
+    final clientSecret = config.yandexAppClientSecret;
+
+    if (clientId == null || clientSecret == null) {
+      Logger.error('Yandex app credentials not found');
+      throw Exception('Pls configure yaml file by readme instructions');
+    }
+
+    final authorizeUrl =
         'https://oauth.yandex.ru/authorize?response_type=code&client_id=$clientId&redirect_uri=$redirectUri';
 
     Logger.info('Please go to the following URL and authorize the app:');
