@@ -1,14 +1,14 @@
 # **Deploy Mate**
 
-Deploy Mate is a utility designed to simplify and automate the build and deployment process for Flutter applications. It supports multiple flavors, build types, and deployment to services like Yandex Disk or App Store Connect, with CI/CD support.
+🚀 Deploy Mate is a CI/CD utility designed to simplify and automate the build and deployment process for Flutter applications. It supports multiple flavors, build types, and deployment to services.
 
 ---
 
 ## **Features**
 - Multi-flavor builds (APK, AAB, IPA)
 - Automatic build number increment
-- Integration with Yandex Disk for artifact deployment
-- Telegram reports
+- Deployment integrations (Appstore Connect, Yandex Drive)
+- Telegram build reports
 - CI/CD-ready configuration with automated setup for tokens
 
 ---
@@ -62,7 +62,6 @@ yandex_token: '' # Leave empty for the first run
 
 ## **Installation**
 
-
 1. **Clone the repository:**
   
 2. **Compile the executable:**
@@ -70,7 +69,6 @@ yandex_token: '' # Leave empty for the first run
    dart compile exe bin/builder.dart -o dmate
 
 3 **Move the executable to your PATH:**
-
    - macOS/Linux:
         ```bash
         sudo mv dmate /usr/local/bin/ 
