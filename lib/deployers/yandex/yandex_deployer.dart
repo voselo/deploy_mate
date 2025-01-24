@@ -12,10 +12,10 @@ class YandexDeployer implements IDeployer {
   YandexDeployer(this.config);
 
   @override
-  Future<void> deploy({required String filePath, Map<String, dynamic>? additionalParams}) async {
+  Future<int> deploy({required String filePath, Map<String, dynamic>? additionalParams}) async {
     if (!File(filePath).existsSync()) {
       Logger.error('File $filePath does not exist.');
-      return;
+      return 400;
     }
 
     final accessToken = config.yandexToken;
@@ -23,7 +23,7 @@ class YandexDeployer implements IDeployer {
 
     if (accessToken == null) {
       Logger.error('Yandex token is not configured.');
-      return;
+      return 401;
     }
 
     try {
@@ -35,9 +35,13 @@ class YandexDeployer implements IDeployer {
         Logger.success('File $fileName uploaded successfully to yandex drive');
       } else {
         Logger.error('Failed to get upload URL for $fileName.');
+        return 500;
       }
+
+      return 200;
     } catch (e) {
       Logger.error('Deployment failed: $e');
+      return 503;
     }
   }
 

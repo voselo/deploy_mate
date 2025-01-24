@@ -6,15 +6,33 @@ import 'package:yaml_writer/yaml_writer.dart';
 
 class FlutterProjectConfig {
   final Map<String, dynamic> _config = {};
-
   final targetDirectory = 'build/apps_builds';
 
+  // Platforms
+  bool get isIosEnabled => _config['use_ios'] ?? false;
+  set useIos(bool value) => _updateConfig('use_ios', value);
+
+  bool get isAndroidEnabled => _config['use_android'] ?? false;
+  set useAndroid(bool value) => _updateConfig('use_android', value);
+
+  bool get isWebEnabled => _config['use_web'] ?? false;
+  set useWeb(bool value) => _updateConfig('use_web', value);
+
+  // Ios
+  String get iosApiKey => _config['ios_api_key'];
+  set iosApiKey(String? value) => _updateConfig('ios_api_key', value);
+
+  String get iosUserIssuer => _config['ios_user_issuer'];
+  set iosUserIssuer(String? value) => _updateConfig('ios_user_issuer', value);
+
+  // Telegram
   String? get botToken => _config['bot_token'];
   set botToken(String? value) => _updateConfig('bot_token', value);
 
   String? get chatId => _config['chat_id'];
   set chatId(String? value) => _updateConfig('chat_id', value);
 
+  // Yandex Drive
   String? get yandexToken => _config['yandex_token'];
   set yandexToken(String? value) => _updateConfig('yandex_token', value);
 
@@ -29,15 +47,6 @@ class FlutterProjectConfig {
 
   String? get yandexAppClientSecret => _config['yandex_app_client_secret'];
   set yandexAppClientSecret(String? value) => _updateConfig('yandex_app_client_secret', value);
-
-  bool get isIosEnabled => _config['use_ios'] ?? false;
-  set useIos(bool value) => _updateConfig('use_ios', value);
-
-  bool get isAndroidEnabled => _config['use_android'] ?? false;
-  set useAndroid(bool value) => _updateConfig('use_android', value);
-
-  bool get isWebEnabled => _config['use_web'] ?? false;
-  set useWeb(bool value) => _updateConfig('use_web', value);
 
   FlutterProjectConfig();
 
