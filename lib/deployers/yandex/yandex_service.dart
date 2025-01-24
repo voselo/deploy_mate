@@ -105,9 +105,6 @@ class YandexService {
       // Сортировка по дате модификации (новые сверху)
       files.sort((a, b) => b['modified'].compareTo(a['modified']));
 
-      Logger.info('data ${data['_embedded']['items'].length}');
-      Logger.info('Total files: ${files.length}');
-      Logger.info('Max allowed files: ${config.yandexMaxSavedBuilds}');
       final maxFiles = config.yandexMaxSavedBuilds - 1;
 
       // Удаление старых файлов
