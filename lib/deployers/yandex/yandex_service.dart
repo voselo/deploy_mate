@@ -1,13 +1,13 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:deploy_mate/core/flutter_project_config.dart';
 import 'package:deploy_mate/core/logger.dart';
-import 'package:deploy_mate/core/project_config.dart';
 import 'package:http/http.dart' as http;
 import 'package:path/path.dart' as path;
 
 class YandexService {
-  final ProjectConfig config;
+  final FlutterProjectConfig config;
 
   YandexService(this.config);
 
@@ -77,6 +77,54 @@ class YandexService {
       Logger.error('Failed to get disk info. Status code: ${response.statusCode}');
       Logger.error('Response: ${response.body}');
       throw Exception('Failed to get disk info.');
+    }
+  }
+
+  Future<void> manageTargetFolder() async {
+    final folderPath = Uri.parse(config.yandexFolder);
+    final url = Uri.parse('https://cloud-api.yandex.net/v1/disk/resources?path=$folderPath');
+
+    final token = config.yandexToken;
+
+    // Получение списка файлов
+    final response = await http.get(
+      url,
+      headers: {'Authorization': 'OAuth $token'},
+    );
+
+    if (response.statusCode == 200) {
+      final Map<String, dynamic> data = json.decode(response.body);
+      final files = (data['_embedded']['items'] as List).map((item) {
+        return {
+          'name': item['name'],
+          'path': item['path'],
+          'modified': DateTime.parse(item['modified']),
+        };
+      }).toList();
+
+      // Сортировка по дате модификации (новые сверху)
+      files.sort((a, b) => b['modified'].compareTo(a['modified']));
+
+      Logger.info('data ${data['_embedded']['items'].length}');
+      Logger.info('Total files: ${files.length}');
+      Logger.info('Max allowed files: ${config.yandexMaxSavedBuilds}');
+      final maxFiles = config.yandexMaxSavedBuilds - 1;
+
+      // Удаление старых файлов
+      if (files.length > maxFiles) {
+        Logger.processing('Performing yandex folder before deploy');
+
+        final filesToDelete = files.skip(maxFiles).toList();
+        Logger.info('filesToDelete ${filesToDelete.length}');
+
+        for (final file in filesToDelete) {
+          await _deleteFile(file['path']);
+        }
+
+        Logger.success('Yandex folder performed');
+      }
+    } else {
+      throw Exception('Failed to fetch folder contents. Status: ${response.statusCode}');
     }
   }
 
@@ -192,5 +240,20 @@ class YandexService {
       }
     }
     return '';
+  }
+
+  Future<void> _deleteFile(String filePath) async {
+    final url = 'https://cloud-api.yandex.net/v1/disk/resources?path=$filePath&permanently=true';
+
+    final response = await http.delete(
+      Uri.parse(url),
+      headers: {'Authorization': 'OAuth ${config.yandexToken}'},
+    );
+
+    if (response.statusCode != 204) {
+      Logger.error(
+        'Failed to delete file $filePath. Status: ${response.statusCode}, Body: ${response.body}',
+      );
+    }
   }
 }

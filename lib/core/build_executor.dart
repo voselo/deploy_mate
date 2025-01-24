@@ -3,22 +3,22 @@ import 'dart:io';
 import 'package:deploy_mate/builders/apk_builder.dart';
 import 'package:deploy_mate/builders/apppbundle_builder.dart';
 import 'package:deploy_mate/builders/ipa_builder.dart';
+import 'package:deploy_mate/core/flutter_project_config.dart';
 import 'package:deploy_mate/core/logger.dart';
-import 'package:deploy_mate/core/project_config.dart';
 import 'package:deploy_mate/deployers/yandex/yandex_deployer.dart';
 import 'package:deploy_mate/deployers/yandex/yandex_service.dart';
-import 'package:deploy_mate/interact/select_config.dart';
+import 'package:deploy_mate/interact/select_options.dart';
 import 'package:deploy_mate/notifiers/telegram_notifier.dart';
 import 'package:deploy_mate/utils/get_version_from_pubspec.dart';
 import 'package:deploy_mate/utils/names/get_android_output_name.dart';
 import 'package:path/path.dart' as path;
 
-class FlavorProcessor {
-  final ProjectConfig config;
+class BuildExecutor {
+  final FlutterProjectConfig config;
   final TelegramNotifier telegramNotifier;
   final Map<String, dynamic> buildReport = {};
 
-  FlavorProcessor(this.config, this.telegramNotifier);
+  BuildExecutor(this.config, this.telegramNotifier);
 
   static List<String> getAvailableFlavors() {
     // Define the path for flavors (only from IOS Flutter directory)
@@ -53,8 +53,6 @@ class FlavorProcessor {
   }
 
   String logFile(String flavor) => 'build_$flavor.log';
-  final targetDirectory = 'build/apps_builds';
-
   IOSink? logFileStream;
 
   Future<void> run({
@@ -116,13 +114,11 @@ class FlavorProcessor {
   }
 
   Future<void> _validateTargetDirectory() async {
-    final targetDir = Directory(targetDirectory);
+    final targetDir = Directory(config.targetDirectory);
 
     if (!targetDir.existsSync()) {
       await targetDir.create(recursive: true);
       Logger.info('Created target directory: ${targetDir.path}');
-    } else {
-      Logger.info('Target directory exists: ${targetDir.path}');
     }
   }
 
@@ -144,7 +140,7 @@ class FlavorProcessor {
   Future<void> _buildApk(String flavor) async {
     Logger.processing('Building $flavor apk');
     final apkBuilder = ApkBuilder();
-    await apkBuilder.build(flavor, targetDir: targetDirectory);
+    await apkBuilder.build(flavor, targetDir: config.targetDirectory);
     Logger.success('$flavor apk build completed');
   }
 
@@ -154,8 +150,9 @@ class FlavorProcessor {
       final YandexDeployer yandexDeployer = YandexDeployer(config);
 
       final appOutputName = getAndroidOutputName(flavor);
-      final appPath = '$targetDirectory/$appOutputName.apk';
+      final appPath = '${config.targetDirectory}/$appOutputName.apk';
 
+      await yandexService.manageTargetFolder();
       await yandexDeployer.deploy(filePath: appPath);
       final downloadApkLink = await yandexService.getBuildAppLink(path.basename(appPath));
       buildReport['apkLink'] = downloadApkLink;
@@ -166,7 +163,7 @@ class FlavorProcessor {
   Future<void> _buildAab(String flavor) async {
     Logger.processing('Building $flavor aab');
     final appBundleBuilder = AppBundleBuilder();
-    await appBundleBuilder.build(flavor, targetDir: targetDirectory);
+    await appBundleBuilder.build(flavor, targetDir: config.targetDirectory);
     Logger.success('$flavor aab build completed');
   }
 
@@ -176,8 +173,9 @@ class FlavorProcessor {
       final YandexDeployer yandexDeployer = YandexDeployer(config);
 
       final appOutputName = getAndroidOutputName(flavor);
-      final appPath = '$targetDirectory/$appOutputName.aab';
+      final appPath = '${config.targetDirectory}/$appOutputName.aab';
 
+      await yandexService.manageTargetFolder();
       await yandexDeployer.deploy(filePath: appPath);
       final downloadApkLink = await yandexService.getBuildAppLink(path.basename(appPath));
       buildReport['appBundleLink'] = downloadApkLink;

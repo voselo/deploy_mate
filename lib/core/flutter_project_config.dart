@@ -4,8 +4,10 @@ import 'package:deploy_mate/core/logger.dart';
 import 'package:yaml/yaml.dart';
 import 'package:yaml_writer/yaml_writer.dart';
 
-class ProjectConfig {
+class FlutterProjectConfig {
   final Map<String, dynamic> _config = {};
+
+  final targetDirectory = 'build/apps_builds';
 
   String? get botToken => _config['bot_token'];
   set botToken(String? value) => _updateConfig('bot_token', value);
@@ -22,13 +24,25 @@ class ProjectConfig {
   String? get yandexAppClientId => _config['yandex_app_client_id'];
   set yandexAppClientId(String? value) => _updateConfig('yandex_app_client_id', value);
 
+  int get yandexMaxSavedBuilds => _config['yandex_max_saved_builds'] ?? 5;
+  set yandexMaxSavedBuilds(int value) => _updateConfig('yandex_max_saved_builds', value);
+
   String? get yandexAppClientSecret => _config['yandex_app_client_secret'];
   set yandexAppClientSecret(String? value) => _updateConfig('yandex_app_client_secret', value);
 
-  ProjectConfig();
+  bool get isIosEnabled => _config['use_ios'] ?? false;
+  set useIos(bool value) => _updateConfig('use_ios', value);
+
+  bool get isAndroidEnabled => _config['use_android'] ?? false;
+  set useAndroid(bool value) => _updateConfig('use_android', value);
+
+  bool get isWebEnabled => _config['use_web'] ?? false;
+  set useWeb(bool value) => _updateConfig('use_web', value);
+
+  FlutterProjectConfig();
 
   /// Initialize configuration from the default YAML file
-  Future<ProjectConfig> init({String configFilePath = 'build_config.yaml'}) async {
+  Future<FlutterProjectConfig> init({String configFilePath = 'build_config.yaml'}) async {
     Logger.processing('Initializing build configuration from $configFilePath...');
 
     final file = File(configFilePath);

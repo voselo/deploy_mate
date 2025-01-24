@@ -55,8 +55,8 @@ Set up the following in your `build_config.yaml`:
 ```yaml
 bot_token: 'your-telegram-bot-token'
 chat_id: 'your-telegram-chat-id'
-yandex_app_client_id: 'dae3ab6b701e4b56bd83e52dbcf210d1'
-yandex_app_client_secret: '637168ea320745c485bb7254f98316b4'
+yandex_app_client_id: 'yandex-app-client-id'
+yandex_app_client_secret: 'yandex-app-client-secret'
 yandex_token: '' # Leave empty for the first run
 ```
 

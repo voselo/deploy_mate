@@ -1,14 +1,15 @@
 import 'dart:convert';
 
+import 'package:deploy_mate/core/flutter_project_config.dart';
 import 'package:deploy_mate/core/logger.dart';
-import 'package:deploy_mate/core/project_config.dart';
+import 'package:deploy_mate/utils/get_current_git_branch.dart';
 import 'package:http/http.dart' as http;
 
 class TelegramNotifier {
   final String? botToken;
   final String? chatId;
 
-  TelegramNotifier(ProjectConfig config)
+  TelegramNotifier(FlutterProjectConfig config)
       : botToken = config.botToken,
         chatId = config.chatId;
 
@@ -27,6 +28,10 @@ class TelegramNotifier {
     final buffer = StringBuffer();
 
     buffer.writeln('📦 *$flavor $version*');
+
+    final branch = await getCurrentGitBranch();
+
+    buffer.writeln('🌿 *$branch*');
 
     if (isIpaDeployed) {
       buffer.writeln('✅ Deployed to App Store Connect');

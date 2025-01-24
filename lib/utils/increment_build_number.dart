@@ -1,6 +1,8 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:deploy_mate/core/logger.dart';
+
 Future<void> incrementBuildNumber() async {
   final pubspecPath = 'pubspec.yaml';
   final pubspecFile = File(pubspecPath);
@@ -36,5 +38,5 @@ Future<void> incrementBuildNumber() async {
   final newLines = lines.map((line) => line == versionLine ? newVersionLine : line).toList();
   pubspecFile.writeAsStringSync(newLines.join('\n'));
 
-  print('Updated build number to: $newBuildNumber');
+  Logger.info('Updated build number to: $newBuildNumber');
 }

@@ -1,3 +1,4 @@
+import 'package:deploy_mate/core/flutter_project_config.dart';
 import 'package:interact/interact.dart';
 
 class BuildOptions {
@@ -10,7 +11,7 @@ class BuildOptions {
   final bool deployAppBundle;
 
   BuildOptions({
-    this.incrementBuildNumber = false,
+    this.incrementBuildNumber = true,
     this.buildIpa = false,
     this.deployIpa = false,
     this.buildApk = false,
@@ -20,28 +21,49 @@ class BuildOptions {
   });
 }
 
-BuildOptions getBuildOptions() {
+BuildOptions getBuildOptions(FlutterProjectConfig config) {
   final defaultOptions = BuildOptions();
-  final answers = MultiSelect(
-    prompt: 'Select build configuration:',
-    options: [
-      'Increment build number',
+
+  final List<String> options = [];
+  final List<bool> defaults = [];
+
+  options.add('Increment build number');
+  defaults.add(defaultOptions.incrementBuildNumber);
+
+  if (config.isIosEnabled) {
+    options.addAll([
       'Build ipa',
       'Deploy ipa',
+    ]);
+    defaults.addAll([
+      defaultOptions.buildIpa,
+      defaultOptions.deployIpa,
+    ]);
+  }
+
+  if (config.isAndroidEnabled) {
+    options.addAll([
       'Build apk',
       'Deploy apk',
       'Build app bundle',
       'Deploy app bundle',
-    ],
-    defaults: [
-      defaultOptions.incrementBuildNumber,
-      defaultOptions.buildIpa,
-      defaultOptions.deployIpa,
+    ]);
+    defaults.addAll([
       defaultOptions.buildApk,
       defaultOptions.deployApk,
       defaultOptions.buildAppBundle,
       defaultOptions.deployAppBundle,
-    ],
+    ]);
+  }
+
+  if (config.isWebEnabled) {
+    // options.addAll([]);
+  }
+
+  final answers = MultiSelect(
+    prompt: 'Select build configuration:',
+    options: options,
+    defaults: defaults,
   ).interact();
 
   return BuildOptions(

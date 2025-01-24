@@ -1,13 +1,13 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:deploy_mate/core/flutter_project_config.dart';
 import 'package:deploy_mate/core/logger.dart';
-import 'package:deploy_mate/core/project_config.dart';
 import 'package:deploy_mate/deployers/deployer_interface.dart';
 import 'package:http/http.dart' as http;
 
 class YandexDeployer implements IDeployer {
-  final ProjectConfig config;
+  final FlutterProjectConfig config;
 
   YandexDeployer(this.config);
 
@@ -32,7 +32,7 @@ class YandexDeployer implements IDeployer {
 
       if (uploadUrl != null) {
         await _uploadFile(filePath, uploadUrl, accessToken);
-        Logger.success('File $fileName uploaded successfully to $yandexFolder.');
+        Logger.success('File $fileName uploaded successfully to yandex drive');
       } else {
         Logger.error('Failed to get upload URL for $fileName.');
       }
